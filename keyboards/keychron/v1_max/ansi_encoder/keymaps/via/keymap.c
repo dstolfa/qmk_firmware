@@ -68,7 +68,91 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][2] = {
 #endif // ENCODER_MAP_ENABLE
 
 // clang-format on
+bool process_record_ds815(uint16_t keycode, keyrecord_t *record) {
+    uint8_t mods;
+    switch (keycode) {
+        case KC_N:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    register_code(KC_LEFT);
+                    register_code(KC_LALT);
+                } else {
+                    unregister_code(KC_LEFT);
+                }
+                return false;
+            };
+            return true;
+        case KC_E:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    register_code(KC_DOWN);
+                    register_code(KC_LALT);
+                } else {
+                    unregister_code(KC_DOWN);
+                }
+                return false;
+            }
+            return true;
+        case KC_I:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    register_code(KC_UP);
+                    register_code(KC_LALT);
+                } else {
+                    unregister_code(KC_UP);
+                }
+                return false;
+            }
+            return true;
+        case KC_O:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    register_code(KC_RIGHT);
+                    register_code(KC_LALT);
+                } else {
+                    unregister_code(KC_RIGHT);
+                }
+                return false;
+            }
+            return true;
+        case KC_RALT:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_LALT);
+                    SEND_STRING("{}" SS_TAP(X_LEFT));
+                    return false;
+                }
+            }
+            return true;
+        case KC_LALT:
+            mods = get_mods();
+            if ((mods & MOD_BIT(KC_RALT)) == MOD_BIT(KC_RALT)) {
+                if (record->event.pressed) {
+                    unregister_code(KC_RALT);
+                    SEND_STRING("()" SS_TAP(X_LEFT));
+                    return false;
+                }
+            }
+            return true;
+        default:
+            break;
+    }
+    return true;
+}
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_ds815(keycode, record)) {
+        return false;
+    }
     if (!process_record_keychron_common(keycode, record)) {
         return false;
     }
